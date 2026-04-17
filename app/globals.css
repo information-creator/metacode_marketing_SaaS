@@ -1,0 +1,201 @@
+:root {
+  --bg: #0b0d10;
+  --panel: #14181d;
+  --panel-2: #1a1f26;
+  --border: #232a33;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #3b82f6;
+  --sms: #22c55e;
+  --kakao: #fbbf24;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+a { color: inherit; text-decoration: none; }
+
+.app-shell {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background: #0e1116;
+  border-right: 1px solid var(--border);
+  padding: 20px 14px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.sidebar__brand {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  padding: 8px 10px 18px;
+  color: var(--text);
+}
+
+.sidebar__section {
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding: 14px 10px 6px;
+}
+
+.sidebar__link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 2px;
+  border: 1px solid transparent;
+}
+
+.sidebar__link:hover {
+  background: var(--panel);
+  color: var(--text);
+}
+
+.sidebar__link.is-active {
+  background: var(--panel);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.sidebar__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.content {
+  padding: 28px 36px 60px;
+  max-width: 1280px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.grid-3 { grid-template-columns: repeat(3, 1fr); }
+.grid-4 { grid-template-columns: repeat(4, 1fr); }
+.grid-2 { grid-template-columns: repeat(2, 1fr); }
+
+.muted { color: var(--muted); }
+.kpi-label { color: var(--muted); font-size: 12px; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.kpi-value { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+.kpi-sub { font-size: 12px; color: var(--muted); }
+
+.page-header { margin-bottom: 24px; }
+.page-title { font-size: 22px; font-weight: 600; margin: 0; }
+.page-subtitle { font-size: 13px; color: var(--muted); margin: 6px 0 0; }
+
+.error-banner {
+  background: #3f1d1d;
+  border: 1px solid #7f1d1d;
+  color: #fecaca;
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 13px;
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+table.data th, table.data td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+table.data th {
+  color: var(--muted);
+  font-weight: 500;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+table.data tr:last-child td { border-bottom: none; }
+
+.pill {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.pill.ok { color: #86efac; border-color: #14532d; background: #052e16; }
+.pill.warn { color: #fcd34d; border-color: #78350f; background: #431407; }
+.pill.bad { color: #fca5a5; border-color: #7f1d1d; background: #3f0c0c; }
+
+.step-list {
+  counter-reset: step;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step-list > li {
+  counter-increment: step;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.step-list > li:last-child { border-bottom: none; }
+
+.step-list > li::before {
+  content: counter(step);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.step-list h4 { margin: 0 0 4px; font-size: 13.5px; font-weight: 600; }
+.step-list p { margin: 0; font-size: 13px; color: var(--muted); }
+.step-list code { background: #0a0c0f; border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-size: 12px; }
