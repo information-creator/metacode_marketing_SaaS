@@ -1,6 +1,7 @@
-import { aggregateByChannel, fetchSolDailyRows, type NormalizedDailyRow } from '@/lib/channels/sol/adapter'
-import { aggregateGoogleAds, fetchGoogleAdsDailyRows, type GoogleAdsDailyRow } from '@/lib/channels/google-ads/adapter'
-import { aggregateMetaAds, fetchMetaAdsDailyRows, type MetaAdsDailyRow } from '@/lib/channels/meta-ads/adapter'
+import { aggregateByChannel, type NormalizedDailyRow } from '@/lib/channels/sol/adapter'
+import { aggregateGoogleAds, type GoogleAdsDailyRow } from '@/lib/channels/google-ads/adapter'
+import { aggregateMetaAds, type MetaAdsDailyRow } from '@/lib/channels/meta-ads/adapter'
+import { queryGoogleDailyRows, queryMetaDailyRows, querySolRows } from '@/lib/queries'
 import {
   gradeColor,
   gradeFromRatio,
@@ -84,11 +85,12 @@ export default async function OverviewPage({
     prev: rows.filter((r) => r.date < midDate),
   })
   const midDate = new Date(Date.now() - days * 86400000).toISOString().slice(0, 10)
+  const fullRange = { mode: 'days' as const, days: days * 2 }
 
   const [solRes, googleRes, metaRes] = await Promise.allSettled([
-    fetchSolDailyRows(days * 2),
-    fetchGoogleAdsDailyRows(days * 2),
-    fetchMetaAdsDailyRows(days * 2),
+    querySolRows(fullRange),
+    queryGoogleDailyRows(fullRange),
+    queryMetaDailyRows(fullRange),
   ])
 
   if (solRes.status === 'fulfilled') {

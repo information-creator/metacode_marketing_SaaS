@@ -1,4 +1,5 @@
-import { fetchSolDailyRows, type NormalizedDailyRow } from '@/lib/channels/sol/adapter'
+import type { NormalizedDailyRow } from '@/lib/channels/sol/adapter'
+import { querySolRows } from '@/lib/queries'
 import { SubTypeBarChart } from '../../chart'
 import { DateRangeTabs } from '@/app/_components/date-range-tabs'
 import { parseDateRange, rangeToDays, rangeFilter, rangeLabel } from '@/app/_components/date-range'
@@ -29,13 +30,12 @@ export default async function SmsDetailPage({
 }) {
   const params = (await searchParams) ?? {}
   const range = parseDateRange(params, 30)
-  const fetchDays = rangeToDays(range)
 
   let rows: NormalizedDailyRow[] = []
   let error: string | null = null
   try {
-    const all = await fetchSolDailyRows(fetchDays)
-    rows = rangeFilter(all.filter((r) => r.channel === 'sms'), range)
+    const all = await querySolRows(range)
+    rows = all.filter((r) => r.channel === 'sms')
   } catch (e) {
     error = (e as Error).message
   }

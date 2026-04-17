@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import { aggregateByChannel, fetchSolDailyRows, type NormalizedDailyRow } from '@/lib/channels/sol/adapter'
+import { aggregateByChannel, type NormalizedDailyRow } from '@/lib/channels/sol/adapter'
+import { querySolRows } from '@/lib/queries'
 import { DateRangeTabs } from '@/app/_components/date-range-tabs'
 import { parseDateRange, rangeFilter, rangeLabel, rangeToDays } from '@/app/_components/date-range'
 import { OverviewChart } from '../chart'
@@ -18,13 +19,11 @@ export default async function MessagingOverviewPage({
 }) {
   const params = (await searchParams) ?? {}
   const range = parseDateRange(params, 90)
-  const fetchDays = rangeToDays(range)
 
   let rows: NormalizedDailyRow[] = []
   let error: string | null = null
   try {
-    const all = await fetchSolDailyRows(fetchDays)
-    rows = rangeFilter(all, range)
+    rows = await querySolRows(range)
   } catch (e) {
     error = (e as Error).message
   }

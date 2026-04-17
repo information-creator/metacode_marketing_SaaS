@@ -1,10 +1,9 @@
 import {
   aggregateGoogleAds,
-  fetchAllGoogleAdsCampaigns,
-  fetchGoogleAdsDailyRows,
   type GoogleAdsCampaign,
   type GoogleAdsDailyRow,
 } from '@/lib/channels/google-ads/adapter'
+import { queryAllGoogleCampaigns, queryGoogleDailyRows } from '@/lib/queries'
 import { AdsCostBar, AdsDailyChart } from './chart'
 import { DateRangeTabs } from '@/app/_components/date-range-tabs'
 import { parseDateRange, rangeFilter, rangeLabel, rangeToDays } from '@/app/_components/date-range'
@@ -109,14 +108,12 @@ export default async function GoogleAdsPage({ searchParams }: { searchParams?: P
   const params = (await searchParams) ?? {}
   const filterStatus = (params.status ?? 'ENABLED').toUpperCase()
   const range = parseDateRange(params, 30)
-  const fetchDays = rangeToDays(range)
 
   let rows: GoogleAdsDailyRow[] = []
   let campaigns: GoogleAdsCampaign[] = []
   let error: string | null = null
   try {
-    ;[rows, campaigns] = await Promise.all([fetchGoogleAdsDailyRows(fetchDays), fetchAllGoogleAdsCampaigns()])
-    rows = rangeFilter(rows, range)
+    ;[rows, campaigns] = await Promise.all([queryGoogleDailyRows(range), queryAllGoogleCampaigns()])
   } catch (e) {
     error = (e as Error).message
   }

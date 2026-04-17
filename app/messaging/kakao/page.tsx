@@ -1,4 +1,5 @@
-import { fetchSolDailyRows, type NormalizedDailyRow } from '@/lib/channels/sol/adapter'
+import type { NormalizedDailyRow } from '@/lib/channels/sol/adapter'
+import { querySolRows } from '@/lib/queries'
 import { SubTypeBarChart } from '../../chart'
 import { DateRangeTabs } from '@/app/_components/date-range-tabs'
 import { parseDateRange, rangeFilter, rangeLabel, rangeToDays } from '@/app/_components/date-range'
@@ -35,13 +36,12 @@ export default async function KakaoDetailPage({
 }) {
   const params = (await searchParams) ?? {}
   const range = parseDateRange(params, 90)
-  const fetchDays = rangeToDays(range)
 
   let rows: NormalizedDailyRow[] = []
   let error: string | null = null
   try {
-    const all = await fetchSolDailyRows(fetchDays)
-    rows = rangeFilter(all.filter((r) => r.channel === 'kakao_biz'), range)
+    const all = await querySolRows(range)
+    rows = all.filter((r) => r.channel === 'kakao_biz')
   } catch (e) {
     error = (e as Error).message
   }

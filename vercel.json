@@ -1,0 +1,7 @@
+{
+  "crons": [
+    { "path": "/api/sync/sms_solapi?days=2", "schedule": "*/30 * * * *" },
+    { "path": "/api/sync/google_ads?days=7", "schedule": "0 */3 * * *" },
+    { "path": "/api/sync/meta_ads?days=7", "schedule": "0 */3 * * *" }
+  ]
+}

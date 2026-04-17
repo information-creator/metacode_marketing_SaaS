@@ -1,8 +1,8 @@
 import {
   aggregateMetaAds,
-  fetchMetaAdsDailyRows,
   type MetaAdsDailyRow,
 } from '@/lib/channels/meta-ads/adapter'
+import { queryMetaDailyRows } from '@/lib/queries'
 import { MetaCostBar, MetaDailyChart } from './chart'
 import { DateRangeTabs } from '@/app/_components/date-range-tabs'
 import { parseDateRange, rangeFilter, rangeLabel, rangeToDays } from '@/app/_components/date-range'
@@ -63,13 +63,11 @@ export default async function MetaAdsPage({
 }) {
   const params = (await searchParams) ?? {}
   const range = parseDateRange(params, 30)
-  const fetchDays = rangeToDays(range)
 
   let rows: MetaAdsDailyRow[] = []
   let error: string | null = null
   try {
-    const all = await fetchMetaAdsDailyRows(fetchDays)
-    rows = rangeFilter(all, range)
+    rows = await queryMetaDailyRows(range)
   } catch (e) {
     error = (e as Error).message
   }
