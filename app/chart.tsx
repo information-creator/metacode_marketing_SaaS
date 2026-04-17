@@ -53,7 +53,7 @@ export function OverviewChart({
           <YAxis stroke="#8b949e" fontSize={11} tickFormatter={(v: number) => `₩${Math.round(v / 1000)}k`} />
           <Tooltip
             contentStyle={{ background: '#14181d', border: '1px solid #232a33', borderRadius: 8, fontSize: 12 }}
-            formatter={(v: number) => `₩${v.toLocaleString('ko-KR')}`}
+            formatter={(v) => `₩${Number(v).toLocaleString('ko-KR')}`}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
           <Line type="monotone" dataKey="메시지" stroke="#22c55e" strokeWidth={2} dot={false} />
