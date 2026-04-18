@@ -80,6 +80,40 @@ export default async function KakaoDetailPage({
       {hasData && (() => {
         const total = rows.reduce((a, r) => a + r.sent, 0)
         const success = rows.reduce((a, r) => a + r.successed, 0)
+        const failed = rows.reduce((a, r) => a + r.failed, 0)
+        const cost = rows.reduce((a, r) => a + r.cost_krw, 0)
+        const rate = total > 0 ? (success / total) * 100 : 0
+        const costPerMsg = total > 0 ? cost / total : 0
+        const subTypes = Array.from(new Set(rows.map((r) => r.sub_type)))
+        return (
+          <section className="grid grid-4" style={{ marginBottom: 16 }}>
+            <div className="card">
+              <div className="kpi-label">총 발송</div>
+              <div className="kpi-value">{fmt(total)}건</div>
+              <div className="kpi-sub">{subTypes.length}개 유형</div>
+            </div>
+            <div className="card">
+              <div className="kpi-label">전달률</div>
+              <div className="kpi-value">{rate.toFixed(1)}%</div>
+              <div className="kpi-sub">성공 {fmt(success)} · 실패 {fmt(failed)}</div>
+            </div>
+            <div className="card">
+              <div className="kpi-label">총 비용</div>
+              <div className="kpi-value">₩{fmt(cost)}</div>
+              <div className="kpi-sub">{rangeLabel(range)}</div>
+            </div>
+            <div className="card">
+              <div className="kpi-label">건당 평균</div>
+              <div className="kpi-value">₩{fmt(Math.round(costPerMsg))}</div>
+              <div className="kpi-sub">알림톡 표준 ₩15 대비</div>
+            </div>
+          </section>
+        )
+      })()}
+
+      {hasData && (() => {
+        const total = rows.reduce((a, r) => a + r.sent, 0)
+        const success = rows.reduce((a, r) => a + r.successed, 0)
         const rate = total > 0 ? (success / total) * 100 : 0
         const bm = kakaoSuccessBenchmark(rate)
         const grade = gradeFromRatio(bm.value / bm.avg, true)

@@ -5,6 +5,7 @@ import {
 } from '@/lib/channels/google-ads/adapter'
 import { queryAllGoogleCampaigns, queryGoogleDailyRows } from '@/lib/queries'
 import { AdsCostBar, AdsDailyChart } from './chart'
+import { GoogleBenchmarkPanel } from './benchmark-panel'
 import { DateRangeTabs } from '@/app/_components/date-range-tabs'
 import { parseDateRange, rangeFilter, rangeLabel, rangeToDays } from '@/app/_components/date-range'
 import { gradeColor, gradeFromRatio, gradeLabel, googleCtrBenchmark } from '@/lib/benchmarks'
@@ -179,33 +180,14 @@ export default async function GoogleAdsPage({ searchParams }: { searchParams?: P
         </section>
       )}
 
-      {rows.length > 0 && (() => {
-        const bm = googleCtrBenchmark(agg.ctr)
-        const ratio = bm.value / bm.avg
-        const grade = gradeFromRatio(ratio, bm.higherIsBetter)
-        const color = gradeColor(grade)
-        const diff = ((ratio - 1) * 100).toFixed(0)
-        const diffSign = ratio >= 1 ? '+' : ''
-        const advice =
-          grade === 'excellent' ? '광고 카피/타겟팅이 매우 잘 맞고 있어요. 이 수준의 CTR을 유지하면서 예산 확대를 고려해볼 만합니다.' :
-          grade === 'good' ? '업계 평균 이상이에요. 현재 방향 유지하면서 A/B 테스트로 추가 개선 여지 탐색.' :
-          grade === 'average' ? '평균 수준. 광고 카피 리프레시나 키워드/오디언스 재조정으로 상승 여지 있음.' :
-          grade === 'below' ? '업계 평균에 못 미침. 광고 소재/제안·타겟 적합성·랜딩 페이지 체크 권장.' :
-          '즉각 점검 필요. 광고 소재 교체, 타겟 재설정, 랜딩 페이지 관련성 재검토.'
-        return (
-          <section className="card" style={{ marginBottom: 16, borderLeft: `4px solid ${color}` }}>
-            <div className="kpi-label" style={{ marginBottom: 6 }}>업계 평균 대비 평가</div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 6 }}>
-              <div style={{ fontSize: 18, fontWeight: 600 }}>CTR {agg.ctr.toFixed(2)}%</div>
-              <span style={{ color, fontSize: 13, fontWeight: 600 }}>{gradeLabel(grade)}</span>
-              <span className="muted" style={{ fontSize: 12 }}>
-                업계 평균({bm.avg}%) 대비 <b style={{ color }}>{diffSign}{diff}%</b>
-              </span>
-            </div>
-            <p className="muted" style={{ fontSize: 13, margin: 0 }}>{advice}</p>
-          </section>
-        )
-      })()}
+      {rows.length > 0 && (
+        <GoogleBenchmarkPanel
+          overall={{ ctr: agg.ctr }}
+          campaigns={allSummaries.map((c) => ({
+            id: c.id, name: c.name, ctr: c.ctr, cost_krw: c.cost_krw, impressions: c.impressions,
+          }))}
+        />
+      )}
 
       {rows.length > 0 && (
         <section className="card" style={{ marginBottom: 16 }}>
@@ -243,26 +225,44 @@ export default async function GoogleAdsPage({ searchParams }: { searchParams?: P
                   <th style={{ textAlign: 'right' }}>비용</th>
                   <th style={{ textAlign: 'right' }}>전환</th>
                   <th>시작일</th>
+                  <th style={{ textAlign: 'center' }}>평가</th>
                 </tr>
               </thead>
               <tbody>
-                {visibleSummaries.map((c) => (
-                  <tr key={c.id}>
-                    <td>
-                      <b>{c.name}</b>
-                      <div className="muted" style={{ fontSize: 11 }}>{c.id}</div>
-                    </td>
-                    <td>{statusPill(c.status)}</td>
-                    <td className="muted" style={{ fontSize: 11 }}>{c.channel_type}</td>
-                    <td style={{ textAlign: 'right' }}>{c.impressions > 0 ? fmt(c.impressions) : '-'}</td>
-                    <td style={{ textAlign: 'right' }}>{c.clicks > 0 ? fmt(c.clicks) : '-'}</td>
-                    <td style={{ textAlign: 'right' }}>{c.impressions > 0 ? `${c.ctr.toFixed(2)}%` : '-'}</td>
-                    <td style={{ textAlign: 'right' }}>{c.clicks > 0 ? `₩${fmt(Math.round(c.cpc))}` : '-'}</td>
-                    <td style={{ textAlign: 'right' }}>{c.cost_krw > 0 ? `₩${fmt(c.cost_krw)}` : '-'}</td>
-                    <td style={{ textAlign: 'right' }}>{c.conversions > 0 ? c.conversions.toFixed(2) : '-'}</td>
-                    <td className="muted" style={{ fontSize: 11 }}>{c.start_date}</td>
-                  </tr>
-                ))}
+                {visibleSummaries.map((c) => {
+                  const ctrBm = googleCtrBenchmark(c.ctr)
+                  const grade = c.impressions > 0
+                    ? gradeFromRatio(ctrBm.value / ctrBm.avg, true)
+                    : null
+                  const color = grade ? gradeColor(grade) : 'var(--muted)'
+                  const tooltip = grade ? `CTR ${c.ctr.toFixed(2)}% vs 업계 평균 ${ctrBm.avg}%` : '노출 데이터 없음'
+                  return (
+                    <tr key={c.id}>
+                      <td>
+                        <b>{c.name}</b>
+                        <div className="muted" style={{ fontSize: 11 }}>{c.id}</div>
+                      </td>
+                      <td>{statusPill(c.status)}</td>
+                      <td className="muted" style={{ fontSize: 11 }}>{c.channel_type}</td>
+                      <td style={{ textAlign: 'right' }}>{c.impressions > 0 ? fmt(c.impressions) : '-'}</td>
+                      <td style={{ textAlign: 'right' }}>{c.clicks > 0 ? fmt(c.clicks) : '-'}</td>
+                      <td style={{ textAlign: 'right' }}>{c.impressions > 0 ? `${c.ctr.toFixed(2)}%` : '-'}</td>
+                      <td style={{ textAlign: 'right' }}>{c.clicks > 0 ? `₩${fmt(Math.round(c.cpc))}` : '-'}</td>
+                      <td style={{ textAlign: 'right' }}>{c.cost_krw > 0 ? `₩${fmt(c.cost_krw)}` : '-'}</td>
+                      <td style={{ textAlign: 'right' }}>{c.conversions > 0 ? c.conversions.toFixed(2) : '-'}</td>
+                      <td className="muted" style={{ fontSize: 11 }}>{c.start_date}</td>
+                      <td style={{ textAlign: 'center' }}>
+                        {grade ? (
+                          <span title={tooltip} style={{ fontSize: 11, fontWeight: 700, color: '#fff', background: color, padding: '3px 10px', borderRadius: 999, whiteSpace: 'nowrap' }}>
+                            {gradeLabel(grade)}
+                          </span>
+                        ) : (
+                          <span className="muted" style={{ fontSize: 11 }}>-</span>
+                        )}
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

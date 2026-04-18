@@ -93,11 +93,11 @@ export function DateRangeTabs({
           사용자 지정 {showCustom ? '▲' : '▼'}
         </button>
 
-        {range.mode === 'custom' && (
-          <span className="muted" style={{ fontSize: 11, marginLeft: 8 }}>
-            {range.from} ~ {range.to}
-          </span>
-        )}
+        <span className="muted" style={{ fontSize: 14, marginLeft: 8 }}>
+          {range.mode === 'custom'
+            ? `${range.from} ~ ${range.to}`
+            : `${toISO(new Date(Date.now() - range.days * 86400000))} ~ ${toISO(new Date())}`}
+        </span>
       </div>
 
       {showCustom && (
