@@ -97,6 +97,18 @@ export default async function SmsDetailPage({
 
       {summary.length > 0 && (
         <>
+          <section className="card" style={{ marginBottom: 16, borderLeft: `4px solid ${color}` }}>
+            <div className="kpi-label" style={{ marginBottom: 6 }}>업계 평균 대비 평가</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 6 }}>
+              <div style={{ fontSize: 18, fontWeight: 600 }}>성공률 {successRate.toFixed(1)}%</div>
+              <span style={{ color, fontSize: 13, fontWeight: 600 }}>{gradeLabel(grade)}</span>
+              <span className="muted" style={{ fontSize: 12 }}>
+                업계 평균({bm.avg}%) 대비 <b style={{ color }}>{diffSign}{diff}%p</b>
+              </span>
+            </div>
+            <p className="muted" style={{ fontSize: 13, margin: 0 }}>{advice}</p>
+          </section>
+
           <section className="grid grid-4" style={{ marginBottom: 16 }}>
             <div className="card">
               <div className="kpi-label">총 발송</div>
@@ -120,18 +132,6 @@ export default async function SmsDetailPage({
               <div className="kpi-value">₩{fmt(Math.round(costPerMsg))}</div>
               <div className="kpi-sub">LMS 표준 ₩33 대비</div>
             </div>
-          </section>
-
-          <section className="card" style={{ marginBottom: 16, borderLeft: `4px solid ${color}` }}>
-            <div className="kpi-label" style={{ marginBottom: 6 }}>업계 평균 대비 평가</div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 6 }}>
-              <div style={{ fontSize: 18, fontWeight: 600 }}>성공률 {successRate.toFixed(1)}%</div>
-              <span style={{ color, fontSize: 13, fontWeight: 600 }}>{gradeLabel(grade)}</span>
-              <span className="muted" style={{ fontSize: 12 }}>
-                업계 평균({bm.avg}%) 대비 <b style={{ color }}>{diffSign}{diff}%p</b>
-              </span>
-            </div>
-            <p className="muted" style={{ fontSize: 13, margin: 0 }}>{advice}</p>
           </section>
 
           <section className="card" style={{ marginBottom: 16 }}>

@@ -14,6 +14,7 @@ const NAV: NavItem[] = [
   { href: '/ads/google', label: 'Google Ads', section: '광고' },
   { href: '/ads/meta', label: 'Meta Ads' },
   { href: '/sync', label: 'Sync Status', section: '운영' },
+  { href: '/benchmarks', label: '평가 기준', section: '참고' },
 ]
 
 export function Sidebar() {

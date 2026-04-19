@@ -61,6 +61,36 @@ export default async function KakaoDetailPage({
 
       {error && <div className="error-banner">수집 실패: {error}</div>}
 
+      {hasData && (() => {
+        const total = rows.reduce((a, r) => a + r.sent, 0)
+        const success = rows.reduce((a, r) => a + r.successed, 0)
+        const rate = total > 0 ? (success / total) * 100 : 0
+        const bm = kakaoSuccessBenchmark(rate)
+        const grade = gradeFromRatio(bm.value / bm.avg, true)
+        const color = gradeColor(grade)
+        const diff = ((bm.value / bm.avg - 1) * 100).toFixed(1)
+        const diffSign = bm.value >= bm.avg ? '+' : ''
+        const advice =
+          grade === 'excellent' ? '알림톡 전달률 우수. 템플릿 승인 상태 안정.' :
+          grade === 'good' ? '양호한 전달률. 발송 품질 유지.' :
+          grade === 'average' ? '일반적 수준. 수신 거부·차단 사용자 비율 확인 권장.' :
+          grade === 'below' ? '전달률 미흡. 채널 친구 맺기 / 템플릿 승인 문제 점검.' :
+          '전달 실패 다수. 발신 프로필 상태 · 템플릿 재심사 필요.'
+        return (
+          <section className="card" style={{ marginBottom: 16, borderLeft: `4px solid ${color}` }}>
+            <div className="kpi-label" style={{ marginBottom: 6 }}>업계 평균 대비 평가</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 6 }}>
+              <div style={{ fontSize: 18, fontWeight: 600 }}>전달률 {rate.toFixed(1)}%</div>
+              <span style={{ color, fontSize: 13, fontWeight: 600 }}>{gradeLabel(grade)}</span>
+              <span className="muted" style={{ fontSize: 12 }}>
+                업계 평균({bm.avg}%) 대비 <b style={{ color }}>{diffSign}{diff}%p</b>
+              </span>
+            </div>
+            <p className="muted" style={{ fontSize: 13, margin: 0 }}>{advice}</p>
+          </section>
+        )
+      })()}
+
       <section style={{ marginBottom: 24 }}>
         <div className="card" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <div style={{ fontSize: 22 }}>{hasData ? '🟢' : '⚪'}</div>
@@ -107,36 +137,6 @@ export default async function KakaoDetailPage({
               <div className="kpi-value">₩{fmt(Math.round(costPerMsg))}</div>
               <div className="kpi-sub">알림톡 표준 ₩15 대비</div>
             </div>
-          </section>
-        )
-      })()}
-
-      {hasData && (() => {
-        const total = rows.reduce((a, r) => a + r.sent, 0)
-        const success = rows.reduce((a, r) => a + r.successed, 0)
-        const rate = total > 0 ? (success / total) * 100 : 0
-        const bm = kakaoSuccessBenchmark(rate)
-        const grade = gradeFromRatio(bm.value / bm.avg, true)
-        const color = gradeColor(grade)
-        const diff = ((bm.value / bm.avg - 1) * 100).toFixed(1)
-        const diffSign = bm.value >= bm.avg ? '+' : ''
-        const advice =
-          grade === 'excellent' ? '알림톡 전달률 우수. 템플릿 승인 상태 안정.' :
-          grade === 'good' ? '양호한 전달률. 발송 품질 유지.' :
-          grade === 'average' ? '일반적 수준. 수신 거부·차단 사용자 비율 확인 권장.' :
-          grade === 'below' ? '전달률 미흡. 채널 친구 맺기 / 템플릿 승인 문제 점검.' :
-          '전달 실패 다수. 발신 프로필 상태 · 템플릿 재심사 필요.'
-        return (
-          <section className="card" style={{ marginBottom: 16, borderLeft: `4px solid ${color}` }}>
-            <div className="kpi-label" style={{ marginBottom: 6 }}>업계 평균 대비 평가</div>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 6 }}>
-              <div style={{ fontSize: 18, fontWeight: 600 }}>전달률 {rate.toFixed(1)}%</div>
-              <span style={{ color, fontSize: 13, fontWeight: 600 }}>{gradeLabel(grade)}</span>
-              <span className="muted" style={{ fontSize: 12 }}>
-                업계 평균({bm.avg}%) 대비 <b style={{ color }}>{diffSign}{diff}%p</b>
-              </span>
-            </div>
-            <p className="muted" style={{ fontSize: 13, margin: 0 }}>{advice}</p>
           </section>
         )
       })()}

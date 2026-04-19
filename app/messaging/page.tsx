@@ -61,50 +61,6 @@ export default async function MessagingOverviewPage({
 
       {error && <div className="error-banner">수집 실패: {error}</div>}
 
-      <section className="grid grid-2" style={{ marginBottom: 16 }}>
-        <Link href="/messaging/sms" style={{ textDecoration: 'none' }}>
-          <div className="card" style={{ cursor: 'pointer', borderLeft: '4px solid #22c55e', height: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-              <span style={{ fontSize: 22 }}>💬</span>
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 600 }}>문자 (SMS / LMS / MMS)</div>
-                <div className="muted" style={{ fontSize: 11 }}>단문 · 장문 · 이미지</div>
-              </div>
-            </div>
-            <div className="kpi-value">{fmt(smsTotal)}건</div>
-            <div className="kpi-sub">
-              성공률 {smsSuccessRate.toFixed(1)}% · ₩{fmt(smsCost)} · 전체의 {smsPct.toFixed(0)}%
-            </div>
-            <div style={{ marginTop: 14, background: 'var(--panel-2)', height: 4, borderRadius: 999, overflow: 'hidden' }}>
-              <div style={{ width: `${smsPct}%`, height: '100%', background: '#22c55e' }} />
-            </div>
-            <div className="muted" style={{ fontSize: 11, marginTop: 14 }}>클릭하여 상세 보기 →</div>
-          </div>
-        </Link>
-
-        <Link href="/messaging/kakao" style={{ textDecoration: 'none' }}>
-          <div className="card" style={{ cursor: 'pointer', borderLeft: '4px solid #fbbf24', height: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
-              <span style={{ fontSize: 22 }}>💛</span>
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 600 }}>카카오톡 (알림톡 / 친구톡)</div>
-                <div className="muted" style={{ fontSize: 11 }}>알림톡 · 친구톡(텍스트/이미지) · BMS</div>
-              </div>
-            </div>
-            <div className="kpi-value">{fmt(kakaoTotal)}건</div>
-            <div className="kpi-sub">
-              {kakaoTotal > 0
-                ? `성공률 ${kakaoSuccessRate.toFixed(1)}% · ₩${fmt(kakaoCost)} · 전체의 ${kakaoPct.toFixed(0)}%`
-                : '현재 발송 기록 없음 (발송 시작하면 자동 집계)'}
-            </div>
-            <div style={{ marginTop: 14, background: 'var(--panel-2)', height: 4, borderRadius: 999, overflow: 'hidden' }}>
-              <div style={{ width: `${kakaoPct}%`, height: '100%', background: '#fbbf24' }} />
-            </div>
-            <div className="muted" style={{ fontSize: 11, marginTop: 14 }}>클릭하여 상세 보기 →</div>
-          </div>
-        </Link>
-      </section>
-
       {(() => {
         const evals: Array<{
           ch: string
@@ -171,6 +127,50 @@ export default async function MessagingOverviewPage({
           </section>
         )
       })()}
+
+      <section className="grid grid-2" style={{ marginBottom: 16 }}>
+        <Link href="/messaging/sms" style={{ textDecoration: 'none' }}>
+          <div className="card" style={{ cursor: 'pointer', borderLeft: '4px solid #22c55e', height: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+              <span style={{ fontSize: 22 }}>💬</span>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 600 }}>문자 (SMS / LMS / MMS)</div>
+                <div className="muted" style={{ fontSize: 11 }}>단문 · 장문 · 이미지</div>
+              </div>
+            </div>
+            <div className="kpi-value">{fmt(smsTotal)}건</div>
+            <div className="kpi-sub">
+              성공률 {smsSuccessRate.toFixed(1)}% · ₩{fmt(smsCost)} · 전체의 {smsPct.toFixed(0)}%
+            </div>
+            <div style={{ marginTop: 14, background: 'var(--panel-2)', height: 4, borderRadius: 999, overflow: 'hidden' }}>
+              <div style={{ width: `${smsPct}%`, height: '100%', background: '#22c55e' }} />
+            </div>
+            <div className="muted" style={{ fontSize: 11, marginTop: 14 }}>클릭하여 상세 보기 →</div>
+          </div>
+        </Link>
+
+        <Link href="/messaging/kakao" style={{ textDecoration: 'none' }}>
+          <div className="card" style={{ cursor: 'pointer', borderLeft: '4px solid #fbbf24', height: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+              <span style={{ fontSize: 22 }}>💛</span>
+              <div>
+                <div style={{ fontSize: 15, fontWeight: 600 }}>카카오톡 (알림톡 / 친구톡)</div>
+                <div className="muted" style={{ fontSize: 11 }}>알림톡 · 친구톡(텍스트/이미지) · BMS</div>
+              </div>
+            </div>
+            <div className="kpi-value">{fmt(kakaoTotal)}건</div>
+            <div className="kpi-sub">
+              {kakaoTotal > 0
+                ? `성공률 ${kakaoSuccessRate.toFixed(1)}% · ₩${fmt(kakaoCost)} · 전체의 ${kakaoPct.toFixed(0)}%`
+                : '현재 발송 기록 없음 (발송 시작하면 자동 집계)'}
+            </div>
+            <div style={{ marginTop: 14, background: 'var(--panel-2)', height: 4, borderRadius: 999, overflow: 'hidden' }}>
+              <div style={{ width: `${kakaoPct}%`, height: '100%', background: '#fbbf24' }} />
+            </div>
+            <div className="muted" style={{ fontSize: 11, marginTop: 14 }}>클릭하여 상세 보기 →</div>
+          </div>
+        </Link>
+      </section>
 
       <section className="card" style={{ marginBottom: 16 }}>
         <h2 style={{ fontSize: 13, fontWeight: 600, margin: '0 0 12px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>

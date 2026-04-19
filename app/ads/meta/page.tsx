@@ -103,6 +103,11 @@ export default async function MetaAdsPage({
 
       {rows.length > 0 && (
         <>
+          <BenchmarkPanel
+            overall={{ ctr: agg.ctr, cpm: agg.cpm }}
+            campaigns={campaigns.map((c) => ({ id: c.id, name: c.name, ctr: c.ctr, cpm: c.cpm, cost_krw: c.cost_krw }))}
+          />
+
           <section className="grid grid-4" style={{ marginBottom: 16 }}>
             <div className="card">
               <div className="kpi-label">노출</div>
@@ -125,11 +130,6 @@ export default async function MetaAdsPage({
               <div className="kpi-sub">{rangeLabel(range)} 누적</div>
             </div>
           </section>
-
-          <BenchmarkPanel
-            overall={{ ctr: agg.ctr, cpm: agg.cpm }}
-            campaigns={campaigns.map((c) => ({ id: c.id, name: c.name, ctr: c.ctr, cpm: c.cpm, cost_krw: c.cost_krw }))}
-          />
 
           <section className="card" style={{ marginBottom: 16 }}>
             <h2 style={{ fontSize: 13, fontWeight: 600, margin: '0 0 16px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>

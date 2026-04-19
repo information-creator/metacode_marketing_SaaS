@@ -154,6 +154,15 @@ export default async function GoogleAdsPage({ searchParams }: { searchParams?: P
       {error && <div className="error-banner">수집 실패: {error}</div>}
 
       {rows.length > 0 && (
+        <GoogleBenchmarkPanel
+          overall={{ ctr: agg.ctr }}
+          campaigns={allSummaries.map((c) => ({
+            id: c.id, name: c.name, ctr: c.ctr, cost_krw: c.cost_krw, impressions: c.impressions,
+          }))}
+        />
+      )}
+
+      {rows.length > 0 && (
         <section className="grid grid-4" style={{ marginBottom: 16 }}>
           <div className="card">
             <div className="kpi-label">노출</div>
@@ -178,15 +187,6 @@ export default async function GoogleAdsPage({ searchParams }: { searchParams?: P
             </div>
           </div>
         </section>
-      )}
-
-      {rows.length > 0 && (
-        <GoogleBenchmarkPanel
-          overall={{ ctr: agg.ctr }}
-          campaigns={allSummaries.map((c) => ({
-            id: c.id, name: c.name, ctr: c.ctr, cost_krw: c.cost_krw, impressions: c.impressions,
-          }))}
-        />
       )}
 
       {rows.length > 0 && (
